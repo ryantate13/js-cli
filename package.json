@@ -1,0 +1,31 @@
+{
+  "name": "js-cli",
+  "version": "1.0.0",
+  "bin": {
+    "js": "index.js"
+  },
+  "description": "",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/jest": "^25.1.0",
+    "@types/node": "^13.5.0",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.0.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "test": "jest --coverage --all",
+    "test:dev": "jest --coverage --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "jest": {
+    "clearMocks": true,
+    "coverageDirectory": "coverage",
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  }
+}
