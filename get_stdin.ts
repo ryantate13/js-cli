@@ -1,13 +1,8 @@
-export function get_stdin(){
-    const {stdin} = process;
-    stdin.setEncoding('utf8');
-    const input: string[] = [];
+export function get_stdin() {
+    const {stdin} = process,
+        input: string[] = [];
     return new Promise<string>((resolve, reject) => {
-        stdin.on('readable', () => {
-            let chunk;
-            while ((chunk = stdin.read()))
-                input.push(chunk);
-        });
+        stdin.on('data', d => input.push(d.toString()));
         stdin.on('end', () => {
             resolve(input.join(''));
         });
