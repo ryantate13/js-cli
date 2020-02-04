@@ -14,7 +14,7 @@ publish:
 		-v $$PWD/dist:/app \
 		-e NPM_TOKEN=$(NPM_TOKEN) \
 		$(BUILD) \
-		sh -c 'env && (npm publish || (echo publish failed >> /dev/stderr && exit 0))'
+		npm publish
 
 build:
 	rm -rf dist
