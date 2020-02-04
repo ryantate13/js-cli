@@ -2,24 +2,27 @@ IMG := $(shell basename $$PWD)
 TEST := $(IMG):test
 BUILD := $(IMG):build
 
+USER_NAME := $(shell whoami)
+USER_ID := $(shell id -u $(USER_NAME))
+GROUP_ID := $(shell id -g $(USER_NAME))
+
 all: test build publish
 	@true
 
 publish:
 	sudo docker run --rm \
 		-v $$PWD/dist:/app \
-		-e NPM_TOKEN \
+		-e NPM_TOKEN=$(NPM_TOKEN) \
 		$(BUILD) \
-		npm publish \
-		|| (echo publish failed >> /dev/stderr && exit 0)
+		sh -c 'env && (npm publish || (echo publish failed >> /dev/stderr && exit 0))'
 
 build:
 	rm -rf dist
 	mkdir dist
 	sudo docker build \
-		--build-arg USER_NAME=$$(whoami) \
-		--build-arg USER_ID=$$(id -u $$(whoami)) \
-		--build-arg GROUP_ID=$$(id -g $$(whoami)) \
+		--build-arg USER_NAME=$(USER_NAME) \
+		--build-arg USER_ID=$(USER_ID) \
+		--build-arg GROUP_ID=$(GROUP_ID) \
 		-f build.dockerfile \
 		-t $(BUILD) \
 		.
@@ -29,9 +32,9 @@ test:
 	rm -rf coverage
 	mkdir coverage
 	sudo docker build \
-		--build-arg USER_NAME=$$(whoami) \
-		--build-arg USER_ID=$$(id -u $$(whoami)) \
-		--build-arg GROUP_ID=$$(id -g $$(whoami)) \
+		--build-arg USER_NAME=$(USER_NAME) \
+		--build-arg USER_ID=$(USER_ID) \
+		--build-arg GROUP_ID=$(GROUP_ID) \
 		-f test.dockerfile \
 		-t $(TEST) \
 		.

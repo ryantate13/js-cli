@@ -16,12 +16,11 @@ RUN npm install
 COPY tsconfig.json /app/tsconfig.json
 COPY *.ts /app/
 COPY README.md /app/README.md
-COPY .npmrc /app/.npmrc
 RUN rm *.test.ts
 
 USER ${USER_NAME}
 CMD node node_modules/.bin/tsc && \
     chmod +x dist/cli.js && \
-    cp package.json README.md .npmrc dist && \
+    cp package.json README.md dist && \
     echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > dist/.npmrc && \
     true
