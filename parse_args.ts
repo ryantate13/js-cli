@@ -5,12 +5,15 @@ export type Args = {
 };
 
 export function usage(){
-    console.error(`Usage: js (-s|-h) 'handler_code'
+    console.error(`Usage: js (-s | -h) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
-    handler_code - String of JavaScript to process stdin with. If a lambda, it will be called with stdin as 'this' arg
-        when not in streaming mode or with each line applied as 'this' while in streaming mode. If the handler evaluates
-        to a value other than undefined, the value will be logged to the console. 
+    handler_code - String of JavaScript to process stdin with. If a lambda, 'this' will evaluate to the entire captured
+        stdin of the process when not in streaming mode or with each line applied as 'this' while in streaming mode.
+        Handler code can be a lambda or an expression. If a lambda, stdin will be passed as the first argument of the
+        function, all lines of stdin when not in streaming mode of line by line when in streaming mode. If a handler
+        expression or return of supplied lambda evaluates to a value other than null or undefined, the value will be
+        logged to the console. 
 
     Examples:
         cat file_of_numbers.txt | js 'this.trim().split(/\\s/+).map(Number).reduce((a,b) => a+b, 0)'

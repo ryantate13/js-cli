@@ -1,0 +1,7 @@
+*
+!.npmrc
+!package.json
+!package-lock.json
+!README.md
+!*.ts
+!tsconfig.json

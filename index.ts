@@ -3,6 +3,10 @@ import {get_stdin_stream} from './get_stdin_stream';
 import {get_stdin} from './get_stdin';
 import {code_evaluator} from './code_evaluator';
 
+export {get_stdin_stream};
+export {get_stdin};
+export {code_evaluator};
+
 export function maybe_log(return_value: unknown){
     if(return_value != undefined)
         console.log(return_value);
