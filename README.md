@@ -32,7 +32,7 @@ js 'this.trim().split(/\s/+).map(Number).reduce((a,b) => a+b, 0)' < file_of_numb
 
 ```shell script
 npm i -g node-fetch
-cat urls.txt | js --stream 'fetch(this).then(res => res.json())'
+cat urls.txt | js --stream 'require("node-fetch")(this).then(res => res.json())'
 ```
 
 #### HTML Parsing
