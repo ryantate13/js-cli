@@ -11,7 +11,7 @@ npm i -g @ryantate/js-cli
 ## Usage
 
 ```shell script
-Usage: js (-s | -h | -v) 'handler_code'
+js (-s | -h | -v) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
     -v | --version Show the version number and quit
