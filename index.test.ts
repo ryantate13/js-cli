@@ -1,6 +1,6 @@
 import colorize from 'json-colorizer';
 import mock_console from 'jest-mock-console';
-import {main, maybe_log} from './index';
+import {main, maybe_log, colors} from './index';
 import {version} from './package.json';
 
 let restore_console: () => void;
@@ -38,7 +38,7 @@ describe('maybe_log', () => {
     it('colorizes JSON when logging to a TTY', () => {
         process.stdout.isTTY = true;
         maybe_log(obj);
-        expect((console.log as any).mock.calls[0][0]).toBe(colorize(json, {pretty: true}));
+        expect((console.log as any).mock.calls[0][0]).toBe(colorize(json, {pretty: true, colors}));
     });
     it('resolves promises and then logs them', async () => {
         const f = jest.fn(() => 1),
@@ -63,7 +63,7 @@ describe('main', () => {
         await main();
         expect((console.error as any).mock.calls.length).toBe(2);
     });
-    it('logs the package verison when called with -v or --version', async () => {
+    it('logs the package version when called with -v or --version', async () => {
         process.argv = ['js', '-v'];
         await main();
         expect((console.log as any).mock.calls.length).toBe(1);
