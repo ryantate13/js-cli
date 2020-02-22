@@ -25,6 +25,12 @@ describe('maybe_log', () => {
         maybe_log(false);
         expect((console.log as any).mock.calls.length).toEqual(6);
     });
+    it('calls JSON.stringify on objects', () => {
+        const obj = {test: 'test'},
+            json = JSON.stringify(obj, null, 4);
+        maybe_log(obj);
+        expect((console.log as any).mock.calls[0][0]).toBe(json);
+    });
 });
 
 describe('main', () => {
