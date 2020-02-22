@@ -26,7 +26,7 @@ describe('default_args', () => {
 
 describe('parse_args', () => {
     beforeEach(() => {
-        process.argv = [script_name];
+        process.argv = ['node', script_name];
     });
     it('parses process.argv and returns an Args struct', () => {
         const args: Args = parse_args();
@@ -37,30 +37,30 @@ describe('parse_args', () => {
     it('parses stream argument, -s or --stream', () => {
         let args: Args = parse_args();
         expect(args.stream).toBe(false);
-        process.argv = [script_name, '-s'];
+        process.argv = ['node', script_name, '-s'];
         args = parse_args();
         expect(args.stream).toBe(true);
-        process.argv = [script_name, '--stream'];
+        process.argv = ['node', script_name, '--stream'];
         args = parse_args();
         expect(args.stream).toBe(true);
     });
     it('parses help argument, -h or --help', () => {
         let args: Args = parse_args();
         expect(args.help).toBe(false);
-        process.argv = [script_name, '-h'];
+        process.argv = ['node', script_name, '-h'];
         args = parse_args();
         expect(args.help).toBe(true);
-        process.argv = [script_name, '--help'];
+        process.argv = ['node', script_name, '--help'];
         args = parse_args();
         expect(args.help).toBe(true);
     });
     it('parses version argument, -v or --version', () => {
         let args: Args = parse_args();
         expect(args.version).toBe(false);
-        process.argv = [script_name, '-v'];
+        process.argv = ['node', script_name, '-v'];
         args = parse_args();
         expect(args.version).toBe(true);
-        process.argv = [script_name, '--version'];
+        process.argv = ['node', script_name, '--version'];
         args = parse_args();
         expect(args.version).toBe(true);
     });
@@ -76,19 +76,19 @@ describe('parse_args', () => {
         const test_handler = 'this.split("\n").map(Number)';
         expect(args.handler).toBe(default_args().handler);
 
-        process.argv = [script_name, test_handler];
+        process.argv = ['node', script_name, test_handler];
         args = parse_args();
         expect(args.handler).toBe(test_handler);
 
-        process.argv = [script_name, '-s', test_handler];
+        process.argv = ['node', script_name, '-s', test_handler];
         args = parse_args();
         expect(args.handler).toBe(test_handler);
 
-        process.argv = [script_name, '-s', test_handler, '-h'];
+        process.argv = ['node', script_name, '-s', test_handler, '-h'];
         args = parse_args();
         expect(args.handler).toBe(test_handler);
 
-        process.argv = [script_name, test_handler, '-s', '-h'];
+        process.argv = ['node', script_name, test_handler, '-s', '-h'];
         args = parse_args();
         expect(args.handler).toBe(test_handler);
     });

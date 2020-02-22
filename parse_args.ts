@@ -33,8 +33,9 @@ export function default_args(): Args {
 }
 
 export function parse_args(): Args {
-    const args = process.argv.slice(1),
-        collected = [];
+    const args = process.argv.slice(2),
+        collected = [],
+        flags = default_args();
 
     for (const arg of args) {
         const h1 = arg[0] === '-',
@@ -46,8 +47,6 @@ export function parse_args(): Args {
         else
             collected.push(arg);
     }
-
-    let flags = default_args();
 
     for (const c of collected) {
         if (c === 's' || c === 'stream')

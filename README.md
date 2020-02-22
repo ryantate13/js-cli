@@ -17,9 +17,9 @@ js (-s | -h | -v) 'handler_code'
     -v | --version Show the version number and quit
 ```
 
-Pipe data in to `js` and supply a lambda or expression to parse it with. The invoked expression or lambda will have `this` bound to either all of stdin or when processing line by line, the individual line. Values returned from a lambda or the result of the expression will be logged to the console. Undefined or null values will not be logged. Promises returned will be resolved and then logged. 
+Pipe data in to `js` and supply a lambda or expression to parse it with. The invoked expression or lambda will have `this` bound to either all of stdin or when processing line by line, or the individual line when in streaming mode. Values returned from a lambda or the result of the expression will be logged to the console. Undefined or null values will not be logged. Promises returned will be resolved and then logged. 
 
-Packages installed globally or in the current working directory will be accessible via `require`.
+Packages installed either globally or in the current working directory are accessible via `require` in this scope (see examples below).
 
 ## Examples
 
