@@ -2,7 +2,7 @@ import mock_console from 'jest-mock-console';
 import {parse_args, default_args, usage, Args} from "./parse_args";
 
 const script_name = 'js';
-const ARGS = ['stream', 'help', 'handler'];
+const ARGS = ['version', 'stream', 'help', 'handler'];
 
 describe('usage', () => {
     it('shows usage instructions for the application', () => {
@@ -19,6 +19,7 @@ describe('default_args', () => {
         expect(Object.keys(args)).toEqual(ARGS);
         expect(args.stream).toBe(false);
         expect(args.help).toBe(false);
+        expect(args.version).toBe(false);
         expect(args.handler).toBe('console.log(this)');
     });
 });
@@ -52,6 +53,16 @@ describe('parse_args', () => {
         process.argv = [script_name, '--help'];
         args = parse_args();
         expect(args.help).toBe(true);
+    });
+    it('parses version argument, -v or --version', () => {
+        let args: Args = parse_args();
+        expect(args.version).toBe(false);
+        process.argv = [script_name, '-v'];
+        args = parse_args();
+        expect(args.version).toBe(true);
+        process.argv = [script_name, '--version'];
+        args = parse_args();
+        expect(args.version).toBe(true);
     });
     it('handles compound flags i.e. -sh', () => {
         process.argv.push('-sjh');

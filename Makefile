@@ -1,15 +1,15 @@
 IMG := $(shell basename $$PWD)
 TEST := $(IMG):test
 BUILD := $(IMG):build
-
-USER_NAME := $(shell whoami)
-USER_ID := $(shell id -u $(USER_NAME))
-GROUP_ID := $(shell id -g $(USER_NAME))
+BUILD_ARGS := --build-arg USER_NAME=$(USER) \
+	--build-arg USER_ID=$(shell id -u $(USER)) \
+	--build-arg GROUP_ID=$(shell id -g $(USER))
 
 all: test build publish
 	@true
 
-publish:
+publish: build
+	[ ! -z $(NPM_TOKEN) ] || (echo NPM_TOKEN is undefined > /dev/stderr && exit 1)
 	sudo docker run --rm \
 		-v $$PWD/dist:/app \
 		-e NPM_TOKEN=$(NPM_TOKEN) \
@@ -20,9 +20,7 @@ build:
 	rm -rf dist
 	mkdir dist
 	sudo docker build \
-		--build-arg USER_NAME=$(USER_NAME) \
-		--build-arg USER_ID=$(USER_ID) \
-		--build-arg GROUP_ID=$(GROUP_ID) \
+		$(BUILD_ARGS) \
 		-f build.dockerfile \
 		-t $(BUILD) \
 		.
@@ -32,9 +30,7 @@ test:
 	rm -rf coverage
 	mkdir coverage
 	sudo docker build \
-		--build-arg USER_NAME=$(USER_NAME) \
-		--build-arg USER_ID=$(USER_ID) \
-		--build-arg GROUP_ID=$(GROUP_ID) \
+		$(BUILD_ARGS) \
 		-f test.dockerfile \
 		-t $(TEST) \
 		.

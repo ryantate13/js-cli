@@ -16,8 +16,9 @@ js (-s | -h) 'handler_code'
     -h | --help - Show this help message and quit
 ```
 
-Pipe data in to `js` and supply a lambda or expression to parse it with. The invoked expression or lambda will have `this` bound to either all of stdin or when processing line by line, the individual line. Values returned from a lambda or the result of the expression will be logged to the console. Undefined or null values will not be logged automatically. 
+Pipe data in to `js` and supply a lambda or expression to parse it with. The invoked expression or lambda will have `this` bound to either all of stdin or when processing line by line, the individual line. Values returned from a lambda or the result of the expression will be logged to the console. Undefined or null values will not be logged. Promises returned will be resolved and then logged. 
 
+Packages installed globally or in the current working directory will be accessible via `require`.
 
 ## Examples
 
@@ -27,11 +28,17 @@ Pipe data in to `js` and supply a lambda or expression to parse it with. The inv
 js 'this.trim().split(/\s/+).map(Number).reduce((a,b) => a+b, 0)' < file_of_numbers.txt
 ```
 
-#### HTML Parsing
-
-* Note: packages brought in via `require` should be installed globally or in the current working directory in order to be in scope.
+#### Curl-like
 
 ```shell script
+npm i -g node-fetch
+cat urls.txt | js --stream 'fetch(this).then(res => res.json())'
+```
+
+#### HTML Parsing
+
+```shell script
+npm i -g cheerio
 curl https://some_website.org | js 'html => require("cheerio").load(html).find("p").length'
 ```
 

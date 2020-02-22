@@ -1,4 +1,5 @@
 export type Args = {
+    version: boolean;
     stream: boolean;
     help: boolean;
     handler: string;
@@ -8,6 +9,7 @@ export function usage(){
     console.error(`Usage: js (-s | -h) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
+    -v | --version Show the version number and quit
     handler_code - String of JavaScript to process stdin with. If a lambda, 'this' will evaluate to the entire captured
         stdin of the process when not in streaming mode or with each line applied as 'this' while in streaming mode.
         Handler code can be a lambda or an expression. If a lambda, stdin will be passed as the first argument of the
@@ -23,6 +25,7 @@ export function usage(){
 
 export function default_args(): Args {
     return {
+        version: false,
         stream: false,
         help: false,
         handler: 'console.log(this)',
@@ -51,6 +54,8 @@ export function parse_args(): Args {
             flags.stream = true;
         else if (c === 'h' || c === 'help')
             flags.help = true;
+        else if (c === 'v' || c === 'version')
+            flags.version = true;
         else
             flags.handler = c;
     }

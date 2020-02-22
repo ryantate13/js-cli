@@ -1,6 +1,6 @@
 {
   "name": "@ryantate/js-cli",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "bin": {
     "js": "cli.js"
   },
@@ -13,7 +13,9 @@
     "access": "public"
   },
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "json-colorizer": "^2.2.1"
+  },
   "devDependencies": {
     "@types/jest": "^25.1.0",
     "@types/node": "^13.5.0",

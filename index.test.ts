@@ -1,5 +1,7 @@
+import colorize from 'json-colorizer';
 import mock_console from 'jest-mock-console';
 import {main, maybe_log} from './index';
+import {version} from './package.json';
 
 let restore_console: () => void;
 
@@ -7,16 +9,19 @@ beforeAll(() => restore_console = mock_console());
 afterAll(() => restore_console());
 
 describe('maybe_log', () => {
+    const obj = {test: 'test'},
+        json = JSON.stringify(obj, null, 4);
+
     it('calls console.log when it receives a value that is not undefined or null', () => {
         maybe_log(undefined);
         expect((console.log as any).mock.calls.length).toEqual(0);
         maybe_log(null);
         expect((console.log as any).mock.calls.length).toEqual(0);
-        maybe_log('foo');
+        maybe_log(json);
         expect((console.log as any).mock.calls.length).toEqual(1);
         maybe_log(2);
         expect((console.log as any).mock.calls.length).toEqual(2);
-        maybe_log({});
+        maybe_log(obj);
         expect((console.log as any).mock.calls.length).toEqual(3);
         maybe_log(NaN);
         expect((console.log as any).mock.calls.length).toEqual(4);
@@ -25,11 +30,23 @@ describe('maybe_log', () => {
         maybe_log(false);
         expect((console.log as any).mock.calls.length).toEqual(6);
     });
-    it('calls JSON.stringify on objects', () => {
-        const obj = {test: 'test'},
-            json = JSON.stringify(obj, null, 4);
+    it('calls JSON.stringify when logging objects', () => {
+        process.stdout.isTTY = false;
         maybe_log(obj);
         expect((console.log as any).mock.calls[0][0]).toBe(json);
+    });
+    it('colorizes JSON when logging to a TTY', () => {
+        process.stdout.isTTY = true;
+        maybe_log(obj);
+        expect((console.log as any).mock.calls[0][0]).toBe(colorize(json, {pretty: true}));
+    });
+    it('resolves promises and then logs them', async () => {
+        const f = jest.fn(() => 1),
+            p = new Promise(r => r()).then(f);
+        maybe_log(p);
+        await new Promise(process.nextTick);
+        expect(f).toHaveBeenCalled();
+        expect((console.log as any).mock.calls[0][0]).toBe(1);
     });
 });
 
@@ -45,6 +62,16 @@ describe('main', () => {
         process.argv = ['js', '--help'];
         await main();
         expect((console.error as any).mock.calls.length).toBe(2);
+    });
+    it('logs the package verison when called with -v or --version', async () => {
+        process.argv = ['js', '-v'];
+        await main();
+        expect((console.log as any).mock.calls.length).toBe(1);
+        process.argv = ['js', '--version'];
+        await main();
+        expect((console.log as any).mock.calls.length).toBe(2);
+        expect((console.log as any).mock.calls.map((c: string[]) => c[0])
+            .every((arg: string) => arg === version)).toBe(true);
     });
     it('calls passed in handler', async () => {
         process.argv = ['js', 'console.log("TEST")'];
