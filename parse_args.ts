@@ -6,7 +6,7 @@ export type Args = {
 };
 
 export function usage(){
-    console.error(`Usage: js (-s | -h) 'handler_code'
+    console.error(`Usage: js (-s | -h | -v) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
     -v | --version Show the version number and quit

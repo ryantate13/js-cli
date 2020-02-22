@@ -11,9 +11,10 @@ npm i -g @ryantate/js-cli
 ## Usage
 
 ```shell script
-js (-s | -h) 'handler_code'
+Usage: js (-s | -h | -v) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
+    -v | --version Show the version number and quit
 ```
 
 Pipe data in to `js` and supply a lambda or expression to parse it with. The invoked expression or lambda will have `this` bound to either all of stdin or when processing line by line, the individual line. Values returned from a lambda or the result of the expression will be logged to the console. Undefined or null values will not be logged. Promises returned will be resolved and then logged. 
