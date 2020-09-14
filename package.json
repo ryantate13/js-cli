@@ -14,16 +14,16 @@
   },
   "main": "index.js",
   "dependencies": {
-    "json-colorizer": "^2.2.1"
+    "json-colorizer": "^2.2.2"
   },
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.2",
-    "jest": "^25.1.0",
-    "jest-mock-console": "^1.0.0",
-    "ts-jest": "^25.2.1",
-    "ts-node": "^8.7.0",
-    "typescript": "^3.8.3"
+    "@types/jest": "^26.0.13",
+    "@types/node": "^14.10.1",
+    "jest": "^26.4.2",
+    "jest-mock-console": "^1.0.1",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   },
   "scripts": {
     "test": "jest --coverage --all",
