@@ -1,6 +1,7 @@
 const expected = 'TEST';
 
 describe('get_stdin', () => {
+    jest.setTimeout(30 * 1000);
     it('returns a Promise<string> which resolves to the stdin of the current process', async () => {
         process.stdin.on = jest.fn((_, handler) => handler(expected)) as any;
         const {get_stdin} = await import('./get_stdin');

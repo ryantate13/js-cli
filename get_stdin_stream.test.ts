@@ -1,6 +1,7 @@
 import {get_stdin_stream} from './get_stdin_stream';
 
 describe('get_stdin_stream', () => {
+    jest.setTimeout(30 * 1000);
     it(`calls its handler function with each line of input received on stdin`, async () => {
         const num_expected = 100,
             expected = 'TEST\n',

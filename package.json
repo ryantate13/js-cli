@@ -27,7 +27,7 @@
     "typescript": "^4.2.4"
   },
   "scripts": {
-    "test": "jest --coverage --all",
+    "test": "jest --coverage --verbose",
     "test:dev": "jest --coverage --watch"
   },
   "keywords": [],
