@@ -2,6 +2,9 @@
 <img src="https://flat.badgen.net/badge/JS/CLI/blue?icon=terminal&scale=15" alt="logo"/>
 </p>
 
+![CI Status](https://github.com/ryantate13/js-cli/actions/workflows/cd.yaml/badge.svg) [![codecov](https://codecov.io/gh/ryantate13/js-cli/branch/master/graph/badge.svg?token=Y0ML1BR16Z)](https://codecov.io/gh/ryantate13/js-cli)
+
+
 # js-cli
 
 Command line script to transform stdout from shell scripts using a JS lambda or expression. Inspired by [fx](https://github.com/antonmedv/fx) but meant to be more general for parsing either raw text or JSON. [YAML support](https://www.npmjs.com/package/yaml) is provided in the scope of the lambda or expression by the global variable `YAML`.
