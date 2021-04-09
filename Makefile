@@ -10,17 +10,18 @@ VERSION_CHECK := \
 		  r = JSON.parse(require('child_process').execSync('npm show ' + p.name +' versions --json')); \
 	process.exit(Number(p.version === r.pop()));
 
-all: $(shell [ ! -z "$GIHUB_ACTIONS" ] && echo test.github || echo test) build publish
+all: test build publish
 
 publish: build
 	@[ ! -z "$(NPM_TOKEN)" ] || (echo NPM_TOKEN is undefined > /dev/stderr && exit 1)
-	docker run --rm $(BUILD) node -e "$(VERSION_CHECK)" \
-		&& docker run --rm \
-			-v $(PWD)/dist:/app \
-			-e NPM_TOKEN=$(NPM_TOKEN) \
-			$(BUILD) \
-			npm publish \
-		|| true
+	@if (docker run --rm $(BUILD) node -e "$(VERSION_CHECK)"); \
+	then \
+	docker run --rm \
+		-v $(PWD)/dist:/app \
+		-e NPM_TOKEN=$(NPM_TOKEN) \
+		$(BUILD) \
+		npm publish; \
+	fi
 
 build: .dockerignore
 	rm -rf dist
@@ -33,10 +34,6 @@ test: .dockerignore
 	mkdir coverage
 	docker build $(BUILD_ARGS) -f test.dockerfile -t $(TEST) .
 	docker run --rm -v $(PWD)/coverage:/app/coverage $(TEST)
-
-test.github:
-	npm i
-	npm test
 
 .dockerignore: $(shell find . -type f -name '*.dockerfile')
 	echo '*' > .dockerignore
