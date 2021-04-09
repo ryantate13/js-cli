@@ -1,6 +1,4 @@
-FROM alpine:3.10
-RUN apk add --update --no-cache nodejs npm
-RUN mkdir /app
+FROM ryantate13/node:build
 
 ARG USER_NAME
 ARG USER_ID

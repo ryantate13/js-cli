@@ -1,6 +1,6 @@
 import colorize from 'json-colorizer';
 import mock_console from 'jest-mock-console';
-import {main, maybe_log, colors} from './index';
+import {colors, main, maybe_log} from './index';
 import {version} from './package.json';
 
 let restore_console: () => void;
@@ -42,7 +42,7 @@ describe('maybe_log', () => {
     });
     it('resolves promises and then logs them', async () => {
         const f = jest.fn(() => 1),
-            p = new Promise(r => r()).then(f);
+            p = Promise.resolve().then(f);
         maybe_log(p);
         await new Promise(process.nextTick);
         expect(f).toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe('main', () => {
         process.argv = ['node', 'js'];
         const main_promise = main(),
             num_expected = 100;
-        for(let i = 0; i < num_expected; ++i)
+        for (let i = 0; i < num_expected; ++i)
             process.stdin.emit('data', 'TEST');
         process.stdin.emit('end');
         await main_promise;
@@ -93,11 +93,27 @@ describe('main', () => {
         expect(match).toBeTruthy();
         expect(match && match.length).toBe(num_expected);
     });
+    it('supports yaml parsing via global YAML', async () => {
+        process.argv = ['node', 'js', 'YAML.parse(this).foo'];
+        const main_promise = main();
+        process.stdin.emit('data', `foo: TEST`);
+        process.stdin.emit('end');
+        await main_promise;
+        expect((console.log as jest.Mock<void>).mock.calls[0][0]).toEqual('TEST');
+    });
+    it('supports multi-line yaml documents', async () => {
+        process.argv = ['node', 'js', 'YAML.parseAllDocuments(this).map(d => d.toJSON().foo).join("-")'];
+        const main_promise = main();
+        process.stdin.emit('data', `foo: TEST\n---\nfoo: TEST`);
+        process.stdin.emit('end');
+        await main_promise;
+        expect((console.log as jest.Mock<void>).mock.calls[0][0]).toEqual('TEST-TEST');
+    });
     it('passes entire stdin as string when not in streaming mode', async () => {
         process.argv = ['node', 'js', 'this.split(/\\s+/).reduce((a, c) => a + Number(c), 0)'];
         const main_promise = main();
         let sum = 0;
-        for(let i = 1; i < 100; ++i){
+        for (let i = 1; i < 100; ++i) {
             sum += i;
             process.stdin.emit('data', `${i}${i % 2 ? ' ' : '\n'}`);
         }
@@ -110,14 +126,14 @@ describe('main', () => {
         const main_promise = main();
         let expected_calls = 100,
             nums: number[] = [];
-        for(let i = 1; i < expected_calls; ++i){
+        for (let i = 1; i < expected_calls; ++i) {
             nums.push(Math.pow(i, 2));
             process.stdin.emit('data', `${i}\n`);
         }
         process.stdin.emit('end');
         await main_promise;
 
-        for(let i = 0; i < expected_calls - 1; ++i){
+        for (let i = 0; i < expected_calls - 1; ++i) {
             const expected = nums[i],
                 actual = (console.log as any).mock.calls[i][0];
             expect(expected).toEqual(actual);

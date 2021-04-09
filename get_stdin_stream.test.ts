@@ -7,7 +7,7 @@ describe('get_stdin_stream', () => {
             handler = jest.fn(f => f),
             p = get_stdin_stream(handler);
 
-        for(let i = 0; i < num_expected; ++i)
+        for (let i = 0; i < num_expected; ++i)
             process.stdin.emit('data', expected);
         process.stdin.emit('end');
         await p;

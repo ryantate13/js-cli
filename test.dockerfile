@@ -1,10 +1,9 @@
-FROM alpine:3.10
-RUN apk add --update --no-cache nodejs npm
-RUN mkdir /app
+FROM ryantate13/node:build
 
 ARG USER_NAME
 ARG USER_ID
 ARG GROUP_ID
+
 RUN addgroup -g ${GROUP_ID} ${USER_NAME} && adduser -u ${USER_ID} -G ${USER_NAME} -D ${USER_NAME}
 
 COPY package.json /app/package.json

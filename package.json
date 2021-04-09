@@ -1,6 +1,6 @@
 {
   "name": "@ryantate/js-cli",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "bin": {
     "js": "cli.js"
   },
@@ -14,16 +14,17 @@
   },
   "main": "index.js",
   "dependencies": {
-    "json-colorizer": "^2.2.2"
+    "json-colorizer": "^2.2.2",
+    "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.10.1",
-    "jest": "^26.4.2",
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.37",
+    "jest": "^26.6.3",
     "jest-mock-console": "^1.0.1",
-    "ts-jest": "^26.3.0",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
   },
   "scripts": {
     "test": "jest --coverage --all",

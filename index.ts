@@ -4,14 +4,25 @@ import {get_stdin_stream} from './get_stdin_stream';
 import {get_stdin} from './get_stdin';
 import {code_evaluator} from './code_evaluator';
 import {version} from './package.json';
+import YAML from 'yaml';
 
 export {get_stdin_stream};
 export {get_stdin};
 export {code_evaluator};
 
-const white = "#888888";
+const white = '#888888';
 export const colors = ['BRACE', 'BRACKET', 'COLON', 'COMMA']
     .reduce((a, c) => ({...a, [c]: white}), {STRING_KEY: 'blueBright'});
+
+declare global {
+    namespace NodeJS {
+        interface Global {
+            YAML: typeof YAML;
+        }
+    }
+}
+
+global.YAML = YAML;
 
 export function maybe_log(return_value: unknown) {
     // if a promise gets returned then resolve it before logging
