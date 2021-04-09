@@ -1,7 +1,12 @@
+import stdin from './stdin';
 import {get_stdin_stream} from './get_stdin_stream';
 
+jest.mock('./stdin', () => ({
+    __esModule: true,
+    default: jest.requireActual('mock-stdin').stdin(),
+}));
+
 describe('get_stdin_stream', () => {
-    jest.setTimeout(30 * 1000);
     it(`calls its handler function with each line of input received on stdin`, async () => {
         const num_expected = 100,
             expected = 'TEST\n',
@@ -9,8 +14,8 @@ describe('get_stdin_stream', () => {
             p = get_stdin_stream(handler);
 
         for (let i = 0; i < num_expected; ++i)
-            process.stdin.emit('data', expected);
-        process.stdin.emit('end');
+            stdin.emit('data', expected);
+        stdin.emit('end');
         await p;
         expect(handler.mock.calls.every(call => call[0] === 'TEST')).toBe(true);
         expect(handler.mock.calls.length).toEqual(num_expected);

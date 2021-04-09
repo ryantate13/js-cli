@@ -1,23 +1,29 @@
+import stdin from './stdin';
+
+jest.mock('./stdin', () => ({
+    __esModule: true,
+    default: jest.requireActual('mock-stdin').stdin(),
+}));
+
 const expected = 'TEST';
 
 describe('get_stdin', () => {
-    jest.setTimeout(30 * 1000);
     it('returns a Promise<string> which resolves to the stdin of the current process', async () => {
-        process.stdin.on = jest.fn((_, handler) => handler(expected)) as any;
+        stdin.on = jest.fn((_, handler) => handler(expected)) as any;
         const {get_stdin} = await import('./get_stdin');
         expect(typeof get_stdin).toBe('function');
         const actual = await get_stdin();
-        expect(process.stdin.on).toHaveBeenCalled();
+        expect(stdin.on).toHaveBeenCalled();
         expect(actual).toBe(expected);
-        (process.stdin.on as any).mockReset();
+        (stdin.on as any).mockReset();
     });
     it('rejects if stdin has an error', async () => {
-        process.stdin.on = jest.fn((type, handler) => type === 'error' && handler(new Error)) as any;
+        stdin.on = jest.fn((type, handler) => type === 'error' && handler(new Error)) as any;
         const {get_stdin} = await import('./get_stdin');
         try {
             await get_stdin();
         } catch (error) {
-            expect(process.stdin.on).toHaveBeenCalled();
+            expect(stdin.on).toHaveBeenCalled();
             expect(error).toBeInstanceOf(Error);
         }
     });
