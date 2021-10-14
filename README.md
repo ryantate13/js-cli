@@ -7,7 +7,7 @@
 
 # js-cli
 
-Command line script to transform stdout from shell scripts using a JS lambda or expression. Inspired by [fx](https://github.com/antonmedv/fx) but meant to be more general for parsing either raw text or JSON. [YAML support](https://www.npmjs.com/package/yaml) is provided in the scope of the lambda or expression by the global variable `YAML`.
+Command line script to transform stdout from shell scripts using a JS lambda or expression. Inspired by [fx](https://github.com/antonmedv/fx) but meant to be more general for parsing either raw text or JSON. [CSV, TOML and YAML support](#working-with-csv-toml-or-yaml-data) is provided in the scope of the lambda or expression by the corresponding global variables `CSV`, `TOML` and `YAML`, each offering a similar parse/stringify interface as that of the native `JSON` (with some caveats, refer to example code below to see where parse or stringify might accept a second `options` argument for a given data type).
 
 ## Installation
 
@@ -32,7 +32,7 @@ Packages installed either globally or in the current working directory are acces
 
 #### Working with CSV, TOML or YAML data
 
-Powered by the [Papa Parse](https://www.papaparse.com/), [@ltd/j-toml](https://www.npmjs.com/package/@ltd/j-toml) and [yaml](https://www.npmjs.com/package/yaml) libraries respectively. Refer to external documentation for specifics as to their functionality. Each library is available to handler functions as the global variables `CSV`, `TOML` and `YAML`. The `CSV` global wraps Papa Parse to enable header parsing by default for csv data and to offer a `stringify` function vs. the upstream `unparse`, bringing it in line with the interface available in `JSON` and other supported data formats.
+Powered by the [Papa Parse](https://www.papaparse.com/), [@ltd/j-toml](https://www.npmjs.com/package/@ltd/j-toml) and [yaml](https://www.npmjs.com/package/yaml) libraries respectively. Refer to external documentation for specifics as to their functionality. Each library is available to handler functions as the global variables `CSV`, `TOML` and `YAML`. The `CSV` global is actually a wrapper around Papa Parse to enable header parsing by default for csv data and to offer a `stringify` function (vs. the upstream `unparse`), bringing it in line with the interface available in `JSON` and the other supported data formats.
 
 ```bash
 # csv with header row
