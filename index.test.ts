@@ -51,6 +51,7 @@ describe('maybe_log', () => {
 });
 
 describe('main', () => {
+    afterEach(() => ['data', 'end', 'error'].forEach(e => process.stdin.removeAllListeners(e)));
     beforeEach(() => {
         (console.log as any).mockClear();
         (console.error as any).mockClear();
@@ -101,13 +102,60 @@ describe('main', () => {
         await main_promise;
         expect((console.log as jest.Mock<void>).mock.calls[0][0]).toEqual('TEST');
     });
-    it('supports multi-line yaml documents', async () => {
+    it('supports parsing yaml with multiple documents', async () => {
         process.argv = ['node', 'js', 'YAML.parseAllDocuments(this).map(d => d.toJSON().foo).join("-")'];
         const main_promise = main();
         process.stdin.emit('data', `foo: TEST\n---\nfoo: TEST`);
         process.stdin.emit('end');
         await main_promise;
         expect((console.log as jest.Mock<void>).mock.calls[0][0]).toEqual('TEST-TEST');
+    });
+    it('can parse csv data', async () => {
+        process.argv = ['node', 'js', 'CSV.parse(this)'];
+        process.stdout.isTTY = false;
+        const main_promise = main();
+        process.stdin.emit('data', 'foo,bar\n1,2');
+        process.stdin.emit('end');
+        await main_promise;
+        expect(JSON.parse((console.log as jest.Mock<void>).mock.calls[0][0])).toEqual([{foo: 1, bar: 2}]);
+    });
+    it('can stringify csv data', async () => {
+        process.argv = ['node', 'js', 'CSV.stringify(JSON.parse(this))'];
+        const main_promise = main();
+        process.stdin.emit('data', JSON.stringify([[1, 2], [3, 4]]));
+        process.stdin.emit('end');
+        await main_promise;
+        expect((console.log as jest.Mock<void>).mock.calls[0][0]).toEqual('1,2\r\n3,4');
+    });
+    it('can parse toml data', async () => {
+        process.argv = ['node', 'js', 'TOML.parse(this)'];
+        process.stdout.isTTY = false;
+        const main_promise = main();
+        process.stdin.emit('data', [
+            '[package]',
+            'name = "hello-world"',
+            'version = "0.1.0"',
+            'authors = ["Ryan Tate"]',
+            'edition = "2018"',
+        ].join('\n'));
+        process.stdin.emit('end');
+        await main_promise;
+        expect(JSON.parse((console.log as jest.Mock<void>).mock.calls[0][0])).toEqual({
+            package: {
+                name: 'hello-world',
+                version: '0.1.0',
+                authors: ['Ryan Tate'],
+                edition: '2018',
+            },
+        });
+    });
+    it('can stringify toml data', async () => {
+        process.argv = ['node', 'js', 'TOML.stringify(JSON.parse(this), {newline: "\\n"})'];
+        const main_promise = main();
+        process.stdin.emit('data', JSON.stringify({foo: 'bar', bar: 'baz'}));
+        process.stdin.emit('end');
+        await main_promise;
+        expect((console.log as jest.Mock<void>).mock.calls[0][0].trim()).toEqual(`foo = 'bar'\nbar = 'baz'`);
     });
     it('passes entire stdin as string when not in streaming mode', async () => {
         process.argv = ['node', 'js', 'this.split(/\\s+/).reduce((a, c) => a + Number(c), 0)'];

@@ -1,5 +1,5 @@
 import mock_console from 'jest-mock-console';
-import {parse_args, default_args, usage, Args} from "./parse_args";
+import {Args, default_args, parse_args, usage} from './parse_args';
 
 const script_name = 'js';
 const ARGS = ['version', 'stream', 'help', 'handler'];

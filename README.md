@@ -30,13 +30,30 @@ Packages installed either globally or in the current working directory are acces
 
 ## Examples
 
-#### Working with YAML
+#### Working with CSV, TOML or YAML data
+
+Powered by the [Papa Parse](https://www.papaparse.com/), [@ltd/j-toml](https://www.npmjs.com/package/@ltd/j-toml) and [yaml](https://www.npmjs.com/package/yaml) libraries respectively. Refer to external documentation for specifics as to their functionality. Each library is available to handler functions as the global variables `CSV`, `TOML` and `YAML`. The `CSV` global wraps Papa Parse to enable header parsing by default for csv data and to offer a `stringify` function vs. the upstream `unparse`, bringing it in line with the interface available in `JSON` and other supported data formats.
 
 ```bash
-# single document
-cat file.yaml | js 'JSON.stringify(YAML.parse(this), null, 4)'
-# multi-document
+# csv with header row
+cat file.csv | js 'CSV.parse(this)'
+# csv without headers
+cat file.csv | js 'CSV.parse(this, {headers: false})'
+# output csv data
+cat array_of_objects.json | js 'CSV.stringify(JSON.parse(this))' > out.csv # keys of first object become header row
+cat array_of_arrays.json | js 'CSV.stringify(JSON.parse(this))' > out.csv # no headers in output csv
+
+# reading TOML data
+cat Cargo.toml | js 'TOML.parse(this)'
+# outputting TOML
+curl my.api | js 'TOML.stringify(JSON.parse(this), {newline: "\n"})' # note that it is necessary to specify newline character
+
+# single yaml document
+cat file.yaml | js 'YAML.parse(this)'
+# multi-document yaml
 cat multi.yaml | js 'YAML.parseAllDocuments(this).map(doc => doc.toJSON())'
+# outputting YAML
+cat data.csv | js 'YAML.stringify(CSV.parse(this))'
 ```
 
 #### Sum all numbers in a file
@@ -85,4 +102,10 @@ ffmpeg \
 	concat:$(find . -type f -name '*.mp3' | js 'this.split("\n").sort().join("|")') \
 	-codec:a libmp3lame \
 	concatenated.mp3
+```
+
+#### Convert CSV to JSON
+
+```bash
+cat data.csv | js 'JSON.stringify(CSV.parse(this))'
 ```

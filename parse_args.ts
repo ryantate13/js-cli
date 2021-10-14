@@ -5,7 +5,7 @@ export type Args = {
     handler: string;
 };
 
-export function usage(){
+export function usage() {
     console.error(`Usage: js (-s | -h | -v) 'handler_code'
     -s | --stream - Streaming mode, handle input line by line
     -h | --help - Show this help message and quit
