@@ -8,6 +8,18 @@ let restore_console: () => void;
 beforeAll(() => restore_console = mock_console());
 afterAll(() => restore_console());
 
+describe('piped_output_handler', () => {
+    it('exits cleanly when piped to process closes the pipe', () => {
+        //@ts-ignore-error
+        process.exit = jest.fn();
+        expect(process.exit).not.toHaveBeenCalled();
+        process.stdout.emit('error', {code: 'unknown'});
+        expect(process.exit).not.toHaveBeenCalled();
+        process.stdout.emit('error', {code: 'EPIPE'});
+        expect(process.exit).toHaveBeenCalled();
+    });
+});
+
 describe('maybe_log', () => {
     const obj = {test: 'test'},
         json = JSON.stringify(obj, null, 4);

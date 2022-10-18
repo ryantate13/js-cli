@@ -23,6 +23,11 @@ global.YAML = yaml;
 global.TOML = toml;
 global.CSV = csv;
 
+process.stdout.on('error', err => {
+    if(err.code === 'EPIPE')
+        process.exit();
+});
+
 const white = '#888888';
 export const colors = ['BRACE', 'BRACKET', 'COLON', 'COMMA']
     .reduce((a, c) => ({...a, [c]: white}), {STRING_KEY: 'blueBright'});

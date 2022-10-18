@@ -4,8 +4,8 @@ ARG USER_NAME
 ARG USER_ID
 ARG GROUP_ID
 
-RUN if (getent group ${GROUP_ID}); then delgroup $(getent group ${GROUP_ID} | cut -d: -f1); fi
 RUN if (getent passwd ${USER_ID}); then deluser $(getent passwd ${USER_ID} | cut -d: -f1); fi
+RUN if (getent group ${GROUP_ID}); then delgroup $(getent group ${GROUP_ID} | cut -d: -f1); fi
 RUN addgroup -g ${GROUP_ID} ${USER_NAME} && adduser -u ${USER_ID} -G ${USER_NAME} -D ${USER_NAME}
 
 COPY package.json /app/package.json
